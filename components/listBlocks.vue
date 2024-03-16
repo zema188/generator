@@ -1,9 +1,11 @@
 <template>
     <div class="list">
         <block
-            v-for="(item, index) of props.data.block"
+            v-for="(item, index) of props.data.blocks"
             :key="index"
             :block="item"
+            :isActive="props.activeBlockInList === index"
+            @click="handleClickBlock(index)"
         />
     </div>
 </template>
@@ -13,8 +15,23 @@ const props = defineProps({
     data: {
         type: Object,
         required: true
+    },
+    
+    activeBlockInList: {
+        type: [null, Number],
+        required: true
     }
 })
+
+const emits = defineEmits(['update:activeBlockInList'])
+
+const handleClickBlock = (index) => {
+    if(props.activeBlockInList === index) {
+        emits('update:activeBlockInList', null)
+    } else {
+        emits('update:activeBlockInList', index)
+    }
+}
 </script>
 
 <style lang="scss" scoped>

@@ -8,23 +8,38 @@
             <button
                 v-for="btn of btns"
                 :key="btn.name"
-                :class="{active: btn.name === activeBtn}"
-                @click="activeBtn = btn.name"
+                :class="{active: btn.name === activeTabBlock}"
+                @click="activeTabBlock = btn.name"
             >
                 {{ btn.value }}
             </button>
         </div>
 
-        <panel/>
+        <panel
+            v-model:activeBlockInList="activeBlockInList"
+            @moveBlock="direction => moveBlock(direction)"
+            :quantityBlocks="data.blocks.length"
+        />
 
         <list-blocks
+            v-if="activeTabBlock === 'redactor'"
             :data="data"
+            v-model:activeBlockInList="activeBlockInList"
+        />
+
+        <html-code
+            v-if="activeTabBlock === 'HTML'"
+        />
+
+        <css-code
+            v-if="activeTabBlock === 'CSS'"
         />
     </div>
 </template>
 
 <script setup>
 import panel from '~/components/panel.vue';
+import htmlCode from './htmlCode.vue';
 
 const btns = ref([
     {
@@ -41,10 +56,11 @@ const btns = ref([
     },
 ])
 
-let activeBtn = ref('redactor')
+let activeTabBlock = ref('redactor')
+let activeBlockInList = ref(null)
 
 const data = ref({
-    block: [
+    blocks: [
         {
             tag: 'h1',
             innerHTML: 'Заголовок страницы',
@@ -125,6 +141,21 @@ const data = ref({
 
     ]
 })
+
+const moveBlock = (direction) => {
+    if (direction === 'up' && activeBlockInList.value > 0) {
+        const newIndex = activeBlockInList.value - 1;
+        const blockToMove = data.value.blocks.splice(activeBlockInList.value, 1)[0];
+        data.value.blocks.splice(newIndex, 0, blockToMove);
+        activeBlockInList.value = newIndex;
+    } else if (direction === 'down' && activeBlockInList.value < data.value.blocks.length - 1) {
+        const newIndex = activeBlockInList.value + 1;
+        const blockToMove = data.value.blocks.splice(activeBlockInList.value, 1)[0];
+        data.value.blocks.splice(newIndex, 0, blockToMove);
+        activeBlockInList.value = newIndex;
+    }
+}
+
 </script>
 
 <style lang="scss" scoped>

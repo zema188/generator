@@ -17,8 +17,9 @@
 
         <panel
             v-model:activeBlockInList="activeBlockInList"
-            @moveBlock="direction => moveBlock(direction)"
             :quantityBlocks="data.blocks.length"
+            @moveBlock="direction => moveBlock(direction)"
+            @openPopupCreate="type => openPopupCreate(type)"
         />
 
         <list-blocks
@@ -29,17 +30,29 @@
 
         <html-code
             v-if="activeTabBlock === 'HTML'"
+            :data="data"
         />
 
         <css-code
             v-if="activeTabBlock === 'CSS'"
         />
     </div>
+
+    <popup
+        :name="'createBlockPopup'"
+    >
+        <create-block
+            :createBlockType="createBlockType"
+            :paramsNewBlock="paramsNewBlock"
+            @createNewBlock="createNewBlock()"
+        />
+    </popup>
 </template>
 
 <script setup>
-import panel from '~/components/panel.vue';
-import htmlCode from './htmlCode.vue';
+import { usePopup } from '~/stores/popup'
+
+const popupStore = usePopup()
 
 const btns = ref([
     {
@@ -58,7 +71,8 @@ const btns = ref([
 
 let activeTabBlock = ref('redactor')
 let activeBlockInList = ref(null)
-
+let createBlockType = ref(null)
+const paramsNewBlock = ref({})
 const data = ref({
     blocks: [
         {
@@ -66,8 +80,10 @@ const data = ref({
             innerHTML: 'Заголовок страницы',
             class: 'title-1',
             type: 'double-sided',
-            additional: {
-                
+            attrs: {},
+            styles: {
+                'text-align': 'center',
+                'font-weight': 'bold',
             }
         },
         {
@@ -75,71 +91,73 @@ const data = ref({
             innerHTML: null,
             class: 'list-1',
             type: 'double-sided',
-            childs: [
-                {
+            attrs: {},
+            styles: {},
+            childs: {
+                info: {
                     tag: 'li',
-                    innerHTML: 'Элемент списка №1',
                     class: 'list-1__item',
                     type: 'double-sided',
-                    additional: {
-                        
-                    }
                 },
-                {
-                    tag: 'li',
-                    innerHTML: 'Элемент списка №2',
-                    class: 'list-1__item',
-                    type: 'double-sided',
-                    additional: {
-                        
-                    }
-                },
-                {
-                    tag: 'li',
-                    innerHTML: 'Элемент списка №3',
-                    class: 'list-1__item',
-                    type: 'double-sided',
-                    additional: {
-                        
-                    }
-                },
-                {
-                    tag: 'li',
-                    innerHTML: 'Элемент списка №4',
-                    class: 'list-1__item',
-                    type: 'double-sided',
-                    additional: {
-                        
-                    }
-                },
-            ],
-            additional: {
-                
-            }
+                items: [
+                    {
+                        innerHTML: 'Элемент списка №1',
+                        attrs: {},
+                        styles: {},
+                    },
+                    {
+                        innerHTML: 'Элемент списка №2',
+                        attrs: {},
+                        styles: {},
+                    },
+                    {
+                        innerHTML: 'Элемент списка №3',
+                        attrs: {},
+                        styles: {
+                            'font-weight': 'bold',
+                        },
+                    },
+                    {
+                        innerHTML: 'Элемент списка №4',
+                        attrs: {},
+                        styles: {},
+                    },
+                ],
+                attrs: {},
+                styles: {
+                    'text-allign': 'center',
+                    'font-weight': 'bold',
+                }
+            },
         },
         {
             tag: 'a',
             innerHTML: 'Ссылка на другую страницу',
             class: 'link-1',
             type: 'double-sided',
-            additional: {
+            attrs: {
                 href: 'https://vk.com/'
-            }
+            },
+            styles: {}
         },
         {
             tag: 'img',
             innerHTML: null,
             class: 'image-1',
             type: 'one-sided',
-            additional: {
+            attrs: {
                 src: 'https://rgo.ru/upload/content_block/images/9ca8302358b777e143cd6e314058266b/7065323d0aa2e3fa6e8764c4f57f1655.jpg?itok=sawvdjq3',
-                test: 'test'
-            }
+                alt: 'птичка'
+            },
+            styles: {}
         }
     ],
-    styles: [
-
-    ]
+    // styles: {
+    //     'title-1': {
+    //         'text-allign': 'center',
+    //         'font-weight': 'bold',
+    //     },
+    // }
 })
 
 const moveBlock = (direction) => {
@@ -154,6 +172,16 @@ const moveBlock = (direction) => {
         data.value.blocks.splice(newIndex, 0, blockToMove);
         activeBlockInList.value = newIndex;
     }
+}
+
+const openPopupCreate = (type) => {
+    createBlockType.value = type
+    popupStore.disableScroll('createBlockPopup')
+}
+
+const createNewBlock = () => {
+    popupStore.enableScroll('createBlockPopup')
+    data.value.blocks.push({...paramsNewBlock.value})
 }
 
 </script>

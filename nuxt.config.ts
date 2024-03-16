@@ -10,6 +10,7 @@ export default defineNuxtConfig({
             Roboto: true
         }
       }
-    ]
+    ],
+    '@pinia/nuxt',
   ]
 })

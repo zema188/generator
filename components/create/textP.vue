@@ -4,19 +4,10 @@
             v-model="paramsNewBlock.innerHTML"
         />
 
-        <fields-select
-            v-model="paramsNewBlock.tag"
-            :options="tags"
-        >
-            <template v-slot:title>
-                HTML тег
-            </template>
-        </fields-select>
-
         <div class="create__title">
             Стили CSS
         </div>
-        
+
         <fields-select
             v-model="paramsNewBlock.styles['text-align']"
             :options="textAlign"
@@ -42,6 +33,7 @@ import { ref } from 'vue';
 import useStyles from '~/mixins/styles';
 
 const { textAlign, fontWeight } = useStyles()
+
 const props = defineProps({
     paramsNewBlock: {
         type: Object,
@@ -77,20 +69,15 @@ const tags = ref([
 ]);
 
 onMounted(() => {
-    props.paramsNewBlock.tag = 'h1'
-    props.paramsNewBlock.innerHTML = ''
+    props.paramsNewBlock.tag = 'p'
     props.paramsNewBlock.type = 'double-sided'
-    props.paramsNewBlock.attrs = {};
+    props.paramsNewBlock.innerHTML = ''
 
     props.paramsNewBlock.styles['text-align'] = 'center';
-    props.paramsNewBlock.styles['font-weight'] = '900';
+    props.paramsNewBlock.styles['font-weight'] = '400';
 })
 </script>
 
 <style lang="scss" scoped>
-.title {
-    font-weight: bold;
-    text-align: center;
-    font-size: 22px;
-}
+
 </style>

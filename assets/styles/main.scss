@@ -57,4 +57,11 @@ input {
 select {
   padding: 10px;
   border-radius: 8px;
+  min-width: 250px;
+}
+
+.create__title {
+  font-weight: bold;
+  text-align: center;
+  font-size: 22px;
 }

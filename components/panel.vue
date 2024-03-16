@@ -8,6 +8,18 @@
             </div>
 
             <div class="panel__item"
+                @click="openPopupCreate('textP')"
+            >
+                Текст
+            </div>
+
+            <div class="panel__item"
+                @click="openPopupCreate('link')"
+            >
+                Ссылка
+            </div>
+
+            <div class="panel__item"
                 @click="openPopupCreate('list')"
             >
                 Список

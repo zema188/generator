@@ -72,7 +72,11 @@ const btns = ref([
 let activeTabBlock = ref('redactor')
 let activeBlockInList = ref(null)
 let createBlockType = ref(null)
-const paramsNewBlock = ref({})
+const paramsNewBlock = ref({
+    styles: {
+            
+    }
+})
 const data = ref({
     blocks: [
         {
@@ -80,7 +84,6 @@ const data = ref({
             innerHTML: 'Заголовок страницы',
             class: 'title-1',
             type: 'double-sided',
-            attrs: {},
             styles: {
                 'text-align': 'center',
                 'font-weight': 'bold',
@@ -91,8 +94,6 @@ const data = ref({
             innerHTML: null,
             class: 'list-1',
             type: 'double-sided',
-            attrs: {},
-            styles: {},
             childs: {
                 info: {
                     tag: 'li',
@@ -102,28 +103,20 @@ const data = ref({
                 items: [
                     {
                         innerHTML: 'Элемент списка №1',
-                        attrs: {},
-                        styles: {},
                     },
                     {
                         innerHTML: 'Элемент списка №2',
-                        attrs: {},
-                        styles: {},
                     },
                     {
                         innerHTML: 'Элемент списка №3',
-                        attrs: {},
                         styles: {
                             'font-weight': 'bold',
                         },
                     },
                     {
                         innerHTML: 'Элемент списка №4',
-                        attrs: {},
-                        styles: {},
                     },
                 ],
-                attrs: {},
                 styles: {
                     'text-allign': 'center',
                     'font-weight': 'bold',
@@ -138,7 +131,6 @@ const data = ref({
             attrs: {
                 href: 'https://vk.com/'
             },
-            styles: {}
         },
         {
             tag: 'img',
@@ -149,15 +141,8 @@ const data = ref({
                 src: 'https://rgo.ru/upload/content_block/images/9ca8302358b777e143cd6e314058266b/7065323d0aa2e3fa6e8764c4f57f1655.jpg?itok=sawvdjq3',
                 alt: 'птичка'
             },
-            styles: {}
         }
     ],
-    // styles: {
-    //     'title-1': {
-    //         'text-allign': 'center',
-    //         'font-weight': 'bold',
-    //     },
-    // }
 })
 
 const moveBlock = (direction) => {
@@ -182,6 +167,16 @@ const openPopupCreate = (type) => {
 const createNewBlock = () => {
     popupStore.enableScroll('createBlockPopup')
     data.value.blocks.push({...paramsNewBlock.value})
+    createBlockType.value = null
+    clearParams()
+}
+
+const clearParams = () => {
+    paramsNewBlock.value = {
+        styles: {
+
+        }
+    }
 }
 
 </script>

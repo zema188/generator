@@ -28,22 +28,38 @@ const createBlock = computed(() => {
         innerHTMLBlock = props.block.innerHTML
     } else if (props.block.childs) {
         props.block.childs.items.forEach(el => {
+            const styles = el.styles ? Object.entries(el.styles).map(([key, value]) => `${key}: ${value}`).join(';') : ''
+
+            const attrs = el.attrs ? Object.entries(el.attrs).map(([key, value]) => `${key}="${value}"`).join(' ') : ''
+
             innerHTMLBlock += `
-                <${props.block.childs.info.tag} class=${props.block.childs.info.class} style="${Object.entries(el.styles).map(([key, value]) => `${key}:${value}`).join(';')}" ${Object.entries(el.attrs).map(([key, value]) => `${key}="${value}"`).join(' ')}>
+                <${props.block.childs.info.tag} class=${props.block.childs.info.class}
+                    style="${styles}"
+                    ${attrs}
+                >
                     ${el.innerHTML}
                 </${props.block.childs.info.tag}>
             `;
         });
     }
 
+    const styles = props.block.styles ? Object.entries(props.block.styles).map(([key, value]) => `${key}: ${value}`).join(';') : ''
+    const attrs = props.block.attrs ? Object.entries(props.block.attrs).map(([key, value]) => `${key}="${value}"`).join(' ') : ''
+
     if (props.block.type === 'double-sided') {
         generatedBlock = `
-            <${props.block.tag} class=${props.block.class} style="${Object.entries(props.block.styles).map(([key, value]) => `${key}:${value}`).join(';')}" ${Object.entries(props.block.attrs).map(([key, value]) => `${key}="${value}"`).join(' ')}>
+            <${props.block.tag} class=${props.block.class}
+                style="${styles}"
+                ${attrs}
+            >
                 ${innerHTMLBlock}
             </${props.block.tag}>
         `;
     } else {
-        generatedBlock = `<${props.block.tag} class=${props.block.class} style="${Object.entries(props.block.styles).map(([key, value]) => `${key}:${value}`).join(';')}" ${Object.entries(props.block.attrs).map(([key, value]) => `${key}="${value}"`).join(' ')}/>`
+        generatedBlock = `<${props.block.tag} class=${props.block.class}
+            style="${styles}"
+            ${attrs}
+        />`
     }
 
     return generatedBlock;

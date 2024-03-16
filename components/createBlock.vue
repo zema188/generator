@@ -12,6 +12,16 @@
                     :paramsNewBlock="paramsNewBlock"
                 />
 
+                <create-text-p
+                    v-if="createBlockType === 'textP'"
+                    :paramsNewBlock="paramsNewBlock"
+                />
+
+                <create-link
+                    v-if="createBlockType === 'link'"
+                    :paramsNewBlock="paramsNewBlock"
+                />
+
                 <create-list
                     v-if="createBlockType === 'list'"
                     :paramsNewBlock="paramsNewBlock"

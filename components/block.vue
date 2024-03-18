@@ -1,10 +1,16 @@
 <template>
-    <div 
-        v-if="props.block"
-        :class="{active: isActive, block}"
-        v-html="createBlock"
-        @click.prevent
-    >
+    <div>
+        <div 
+            v-if="props.block && !pre"
+            :class="{active: isActive, block}"
+            v-html="createBlock"
+            @click.prevent
+        >
+        </div>
+
+        <div v-if="props.block && pre">
+            <pre ref="preBlock">{{ createBlock }}</pre>
+        </div>
     </div>
 </template>
 
@@ -14,56 +20,96 @@ const props = defineProps({
         type: Object,
         required: true
     },
+
     isActive: {
         type: Boolean,
-        required: true
+        required: false
+    },
+
+    pre: {
+        type: Boolean,
+        required: false
     }
 })
+
+const preBlock = ref(null)
+const customBlocks = ['nav']
 
 const createBlock = computed(() => {
     let generatedBlock = '';
     let innerHTMLBlock = '';
 
-    if(props.block.innerHTML) {
-        innerHTMLBlock = props.block.innerHTML
+    let custom = customBlocks.includes(props.block.tag);
+
+    if (props.block.innerHTML) {
+        innerHTMLBlock = props.block.innerHTML;
     } else if (props.block.childs) {
-        props.block.childs.items.forEach(el => {
-            const styles = el.styles ? Object.entries(el.styles).map(([key, value]) => `${key}: ${value}`).join(';') : ''
+        let childsItems = [];
 
-            const attrs = el.attrs ? Object.entries(el.attrs).map(([key, value]) => `${key}="${value}"`).join(' ') : ''
+        if (custom) {
+            if (props.block.tag === 'nav') {
+                childsItems = [...props.block.childs.items];
+            }
+        } else {
+            childsItems = [...props.block.childs.items];
+        }
 
-            innerHTMLBlock += `
-                <${props.block.childs.info.tag} class=${props.block.childs.info.class}
-                    style="${styles}"
-                    ${attrs}
-                >
-                    ${el.innerHTML}
-                </${props.block.childs.info.tag}>
-            `;
+        childsItems.forEach((el, index) => {
+            const styles = el.styles && !props.pre ? Object.entries(el.styles).map(([key, value]) => `${key}: ${value}`).join(';') : '';
+            const attrs = el.attrs ? Object.entries(el.attrs).map(([key, value]) => `${key}="${value}"`).join(' ') : '';
+
+            if (custom) {
+                if (props.block.tag === 'nav') {
+                    innerHTMLBlock += `\n       <li>
+            <${props.block.childs.info.tag} class=${props.block.childs.info.class} style="${styles}" ${attrs}>
+                ${el.innerHTML}
+            </${props.block.childs.info.tag}>
+        </li>`;
+                }
+            } else {
+                    innerHTMLBlock += `\n   <${props.block.childs.info.tag} class=${props.block.childs.info.class} style="${styles}" ${attrs}>
+        ${el.innerHTML}
+    </${props.block.childs.info.tag}>`;
+            }
         });
     }
+    const styles = props.block.styles && !props.pre ? Object.entries(props.block.styles).map(([key, value]) => `${key}: ${value}`).join(';') : '';
+    const attrs = props.block.attrs ? Object.entries(props.block.attrs).map(([key, value]) => `${key}="${value}"`).join(' ') : '';
 
-    const styles = props.block.styles ? Object.entries(props.block.styles).map(([key, value]) => `${key}: ${value}`).join(';') : ''
-    const attrs = props.block.attrs ? Object.entries(props.block.attrs).map(([key, value]) => `${key}="${value}"`).join(' ') : ''
-
-    if (props.block.type === 'double-sided') {
-        generatedBlock = `
-            <${props.block.tag} class=${props.block.class}
-                style="${styles}"
-                ${attrs}
-            >
-                ${innerHTMLBlock}
-            </${props.block.tag}>
-        `;
+    if (props.block.typeTag === 'double-sided') {
+        if (custom) {
+            if (props.block.tag === 'nav') {
+                generatedBlock = `<${props.block.tag} class=${props.block.class} ${attrs}>
+    <ul style="${styles}">
+        ${innerHTMLBlock}
+    </ul>
+</${props.block.tag}>`;
+            } else {
+                generatedBlock = `
+                    <${props.block.tag} class=${props.block.class} style="${styles}" ${attrs}>
+                        ${innerHTMLBlock}
+                    </${props.block.tag}>`;
+            }
+        } else {
+            generatedBlock = `<${props.block.tag} class=${props.block.class} style="${styles}" ${attrs}>
+    ${innerHTMLBlock}
+</${props.block.tag}>`;
+        }
     } else {
-        generatedBlock = `<${props.block.tag} class=${props.block.class}
-            style="${styles}"
-            ${attrs}
-        />`
+        generatedBlock = `<${props.block.tag} class=${props.block.class} style="${styles}" ${attrs}/>`;
     }
 
     return generatedBlock;
 });
+
+
+const quantityLines = computed(() => {
+    return preBlock.value.textContent.split("\n").length
+})
+
+onMounted(() => {
+    if(props.pre) quantityLines
+})
 </script>
 
 <style lang="scss" scoped>

@@ -1,6 +1,6 @@
 <template>
     <div class="panel">
-        <div class="panel__list">
+        <div class="panel__list" v-if="activeTabBlock === 'redactor'">
             <div class="panel__item"
                 @click="openPopupCreate('title')"
             >
@@ -24,21 +24,47 @@
             >
                 Список
             </div>
+
+            <div class="panel__item"
+                @click="openPopupCreate('nav')"
+            >
+                Меню
+            </div>
         </div>
 
-        <div class="arrows-btns">
+        <div class="action action_redactor" v-if="activeTabBlock === 'redactor'">
             <button class="up"
-                :disabled="activeBlockInList === null || activeBlockInList === 0"
+                :disabled="indexActiveBlockInList === null || indexActiveBlockInList === 0"
                 @click="emits('moveBlock', 'up')"
             >
-                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M12 5V19M12 5L6 11M12 5L18 11" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
+                <icons-arrow/>
             </button>
 
             <button class="down"
-                :disabled="activeBlockInList === null || activeBlockInList === quantityBlocks - 1"
+                :disabled="indexActiveBlockInList === null || indexActiveBlockInList === quantityBlocks - 1"
                 @click="emits('moveBlock', 'down')"
             >
-                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M12 5V19M12 5L6 11M12 5L18 11" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
+                <icons-arrow/>
+            </button>
+
+            <button class="edit"
+                :disabled="indexActiveBlockInList === null"
+                @click="emits('openPopupEdit',)"
+            >
+                <icons-edit/>
+            </button>
+
+            <button class="trash"
+                :disabled="indexActiveBlockInList === null"
+                @click="emits('deleteBlock',)"
+            >
+                <icons-trash/>
+            </button>
+        </div>
+
+        <div class="action action_html" v-if="activeTabBlock === 'HTML'">
+            <button class="btn btn_blue">
+                Скопировать код
             </button>
         </div>
     </div>
@@ -46,7 +72,7 @@
 
 <script setup>
 const props = defineProps({
-    activeBlockInList: {
+    indexActiveBlockInList: {
         type: [null, Number],
         required: true
     },
@@ -54,10 +80,15 @@ const props = defineProps({
     quantityBlocks: {
         type: Number,
         required: true
+    },
+
+    activeTabBlock: {
+        type: String,
+        required: true
     }
 })
 
-const emits = defineEmits(['moveBlock', 'openPopupCreate'])
+const emits = defineEmits(['moveBlock', 'openPopupCreate', 'deleteBlock', 'openPopupEdit'])
 
 const openPopupCreate = (type) => {
     emits('openPopupCreate', type)
@@ -90,8 +121,17 @@ const openPopupCreate = (type) => {
     }
 }
 
-.arrows-btns {
+.action {
     display: flex;
+    &_html {
+        padding: 10px;
+    }
+    & .edit {
+        width: 28px;
+        & svg {
+            height: 18px;
+        }
+    }
     & button {
         display: flex;
         align-items: center;

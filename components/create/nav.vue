@@ -4,25 +4,40 @@
             Элементы списка
         </div>
 
-        <div class="items"
+        <div class="links"
             v-if="props.paramsNewBlock.childs"
         >
-            <fields-input
+            <div
+                class="link"
                 v-for="(el, index) of props.paramsNewBlock.childs.items" :key="index"
-                v-model="el.innerHTML"
-                icon
             >
-
-                <template v-slot:title>
-                    {{ index + 1}} Элемент
-                </template>
-                <template v-slot:icon>
+                <button class="cross">
                     <icons-cross
                         @click="deleteChild(index)"
                     />
-                </template>
-            </fields-input>
+                </button>
+
+                <fields-input
+                    v-model="el.innerHTML"
+                >
+
+                    <template v-slot:title>
+                        {{ index + 1}} Элемент
+                    </template>
+                </fields-input>
+
+                <fields-input
+                    v-model="el.attrs.href"
+                >
+
+                    <template v-slot:title>
+                        Ссылка
+                    </template>
+
+                </fields-input>
+            </div>
         </div>
+
         <button class="btn btn_green btn_small"
             @click="addChild()"
         >
@@ -65,12 +80,18 @@ const props = defineProps({
 
 const childs = ref([
     {
-
+        attrs: {
+            
+        }
     },
 ])
 
 const addChild = () => {
-    childs.value.push({})
+    childs.value.push({
+        attrs: {
+            
+        }
+    })
 }
 
 const deleteChild = (index) => {
@@ -78,29 +99,23 @@ const deleteChild = (index) => {
 }
 
 const initParams = () => {
-    console.log('test')
-    props.paramsNewBlock.tag = 'ul'
+    props.paramsNewBlock.tag = 'nav'
     props.paramsNewBlock.typeTag = 'double-sided'
-    props.paramsNewBlock.type = 'list'
+    props.paramsNewBlock.type = 'nav'
     props.paramsNewBlock.innerHTML = ''
 
     props.paramsNewBlock.styles = {
-        'list-style': 'disc',
+        'list-style': 'none',
         'text-align': 'left',
         'font-weight': 'bold',
-        'color': 'black',
+        'color': 'green',
     }
     props.paramsNewBlock.childs = {
         info: {
-            tag: 'li',
+            tag: 'a',
             type: 'double-sided',
         },
         items: childs.value,
-        styles: {
-            'text-allign': 'center',
-            'font-weight': 'bold',
-            'color': 'red',
-        }
     }
 }
 
@@ -110,12 +125,24 @@ onMounted(() => {
 </script>
 
 <style lang="scss" scoped>
-.field {
-    & .icon {
+.link {
+    border: 1px solid #000000d2;
+    border-radius: 12px;
+    padding: 15px;
+    margin-bottom: 15px;
+    position: relative;
+    & .cross {
         position: absolute;
+        right: 10px;
+        top: 10px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
         & svg {
-            width: 20px;
+
         }
+
+        width: 20px;
     }
 }
 </style>

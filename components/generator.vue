@@ -16,16 +16,21 @@
         </div>
 
         <panel
-            v-model:activeBlockInList="activeBlockInList"
+            v-model:indexActiveBlockInList="indexActiveBlockInList"
             :quantityBlocks="data.blocks.length"
+            :activeTabBlock="activeTabBlock"
             @moveBlock="direction => moveBlock(direction)"
             @openPopupCreate="type => openPopupCreate(type)"
+            @deleteBlock="deleteBlock()"
+            @openPopupEdit="openPopupEdit()"
         />
 
         <list-blocks
             v-if="activeTabBlock === 'redactor'"
             :data="data"
+            v-model:indexActiveBlockInList="indexActiveBlockInList"
             v-model:activeBlockInList="activeBlockInList"
+            v-on-click-outside="onClickOutsideHandler"
         />
 
         <html-code
@@ -40,16 +45,20 @@
 
     <popup
         :name="'createBlockPopup'"
+        @closePopup="closePopup"
     >
         <create-block
-            :createBlockType="createBlockType"
+            :blockType="blockType"
             :paramsNewBlock="paramsNewBlock"
+            :activeBlockInList="activeBlockInList"
             @createNewBlock="createNewBlock()"
+            @editActiveBlock="editActiveBlock()"
         />
     </popup>
 </template>
 
 <script setup>
+import { vOnClickOutside } from '@vueuse/components'
 import { usePopup } from '~/stores/popup'
 
 const popupStore = usePopup()
@@ -69,36 +78,110 @@ const btns = ref([
     },
 ])
 
-let activeTabBlock = ref('redactor')
-let activeBlockInList = ref(null)
-let createBlockType = ref(null)
 const paramsNewBlock = ref({
     styles: {
             
+    },
+    attrs: {
+            
     }
 })
+
+let activeTabBlock = ref('HTML')
+let indexActiveBlockInList = ref(null)
+let activeBlockInList = ref(null)
+let blockType = ref(null)
+
+const moveBlock = (direction) => {
+    if (direction === 'up' && indexActiveBlockInList.value > 0) {
+        const newIndex = indexActiveBlockInList.value - 1;
+        const blockToMove = data.value.blocks.splice(indexActiveBlockInList.value, 1)[0];
+        data.value.blocks.splice(newIndex, 0, blockToMove);
+        indexActiveBlockInList.value = newIndex;
+    } else if (direction === 'down' && indexActiveBlockInList.value < data.value.blocks.length - 1) {
+        const newIndex = indexActiveBlockInList.value + 1;
+        const blockToMove = data.value.blocks.splice(indexActiveBlockInList.value, 1)[0];
+        data.value.blocks.splice(newIndex, 0, blockToMove);
+        indexActiveBlockInList.value = newIndex;
+    }
+}
+
+const openPopupCreate = (type) => {
+    blockType.value = type
+    activeBlockInList.value = null
+    popupStore.disableScroll('createBlockPopup')
+}
+
+const createNewBlock = () => {
+    popupStore.enableScroll('createBlockPopup')
+    data.value.blocks.push({...paramsNewBlock.value})
+    blockType.value = null
+    clearParams()
+}
+
+const editActiveBlock = () => {
+    data.value.blocks[indexActiveBlockInList.value] = JSON.parse(JSON.stringify(paramsNewBlock.value))
+}
+
+const deleteBlock = () => {
+    data.value.blocks.splice(indexActiveBlockInList.value, 1)
+    indexActiveBlockInList.value = null
+}
+
+const openPopupEdit = () => {
+    // paramsNewBlock.value = {...activeBlockInList.value}
+    paramsNewBlock.value = JSON.parse(JSON.stringify(activeBlockInList.value))
+    blockType.value = activeBlockInList.value.type 
+    popupStore.disableScroll('createBlockPopup')
+}
+
+const clearParams = () => {
+    paramsNewBlock.value = {
+        styles: {
+
+        },
+        attrs: {
+
+        }
+    }
+}
+
+const closePopup = () => {
+    clearParams()
+    blockType.value = null
+}
+
 const data = ref({
     blocks: [
         {
             tag: 'h1',
+            typeTag: 'double-sided',
             innerHTML: 'Заголовок страницы',
             class: 'title-1',
-            type: 'double-sided',
+            type: 'title',
             styles: {
                 'text-align': 'center',
-                'font-weight': 'bold',
+                'font-weight': '800',
+                'font-size': '25px',
             }
         },
         {
             tag: 'ul',
+            typeTag: 'double-sided',
             innerHTML: null,
             class: 'list-1',
-            type: 'double-sided',
+            type: 'list',
+            styles: {
+                'list-style': 'disc',
+                'text-align': 'left',
+                'font-weight': '500',
+                'color': 'green',
+            },
             childs: {
                 info: {
                     tag: 'li',
                     class: 'list-1__item',
-                    type: 'double-sided',
+                    typeTag: 'double-sided',
                 },
                 items: [
                     {
@@ -110,7 +193,8 @@ const data = ref({
                     {
                         innerHTML: 'Элемент списка №3',
                         styles: {
-                            'font-weight': 'bold',
+                            'font-weight': '500',
+                            'color': 'red',
                         },
                     },
                     {
@@ -118,67 +202,137 @@ const data = ref({
                     },
                 ],
                 styles: {
-                    'text-allign': 'center',
-                    'font-weight': 'bold',
+                    'text-align': 'center',
+                    'font-weight': '500',
+                    'color': 'green',
                 }
             },
         },
         {
             tag: 'a',
+            typeTag: 'double-sided',
             innerHTML: 'Ссылка на другую страницу',
             class: 'link-1',
-            type: 'double-sided',
+            type: 'link',
             attrs: {
                 href: 'https://vk.com/'
             },
+            styles: {},
         },
         {
-            tag: 'img',
+            tag: 'nav',
+            typeTag: 'double-sided',
             innerHTML: null,
-            class: 'image-1',
-            type: 'one-sided',
-            attrs: {
-                src: 'https://rgo.ru/upload/content_block/images/9ca8302358b777e143cd6e314058266b/7065323d0aa2e3fa6e8764c4f57f1655.jpg?itok=sawvdjq3',
-                alt: 'птичка'
+            class: 'nav-1',
+            type: 'nav',
+            childs: {
+                info: {
+                    tag: 'a',
+                    class: '',
+                    typeTag: 'double-sided',
+                },
+                items: [
+                    {
+                        innerHTML: 'Элемент списка №1',
+                        attrs: {
+                            href: 'https://vk.com/'
+                        },
+                    },
+                    {
+                        innerHTML: 'Элемент списка №1',
+                        attrs: {
+                            href: 'https://vk.com/'
+                        },
+                    },
+                    {
+                        innerHTML: 'Элемент списка №1',
+                        attrs: {
+                            href: 'https://vk.com/'
+                        },
+                    },
+                    {
+                        innerHTML: 'Элемент списка №1',
+                        attrs: {
+                            href: 'https://vk.com/'
+                        },
+                    },
+                    {
+                        innerHTML: 'Элемент списка №1',
+                        attrs: {
+                            href: 'https://vk.com/'
+                        },
+                    },
+                    {
+                        innerHTML: 'Элемент списка №1',
+                        attrs: {
+                            href: 'https://vk.com/'
+                        },
+                    },
+                    {
+                        innerHTML: 'Элемент списка №1',
+                        attrs: {
+                            href: 'https://vk.com/'
+                        },
+                    },
+                    {
+                        innerHTML: 'Элемент списка №1',
+                        attrs: {
+                            href: 'https://vk.com/'
+                        },
+                    },
+                    {
+                        innerHTML: 'Элемент списка №1',
+                        attrs: {
+                            href: 'https://vk.com/'
+                        },
+                    },
+                    {
+                        innerHTML: 'Элемент списка №1',
+                        attrs: {
+                            href: 'https://vk.com/'
+                        },
+                    },
+                    {
+                        innerHTML: 'Элемент списка №1',
+                        attrs: {
+                            href: 'https://vk.com/'
+                        },
+                    },
+                    {
+                        innerHTML: 'Элемент списка №1',
+                        attrs: {
+                            href: 'https://vk.com/'
+                        },
+                    },
+                ],
             },
-        }
+        },
+        // {
+        //     tag: 'img',
+        //     typeTag: 'one-sided',
+        //     innerHTML: null,
+        //     class: 'image-1',
+        //     type: 'photo',
+        //     attrs: {
+        //         src: 'https://rgo.ru/upload/content_block/images/9ca8302358b777e143cd6e314058266b/7065323d0aa2e3fa6e8764c4f57f1655.jpg?itok=sawvdjq3',
+        //         alt: 'птичка'
+        //     },
+        //     styles: {},
+        // }
     ],
 })
 
-const moveBlock = (direction) => {
-    if (direction === 'up' && activeBlockInList.value > 0) {
-        const newIndex = activeBlockInList.value - 1;
-        const blockToMove = data.value.blocks.splice(activeBlockInList.value, 1)[0];
-        data.value.blocks.splice(newIndex, 0, blockToMove);
-        activeBlockInList.value = newIndex;
-    } else if (direction === 'down' && activeBlockInList.value < data.value.blocks.length - 1) {
-        const newIndex = activeBlockInList.value + 1;
-        const blockToMove = data.value.blocks.splice(activeBlockInList.value, 1)[0];
-        data.value.blocks.splice(newIndex, 0, blockToMove);
-        activeBlockInList.value = newIndex;
-    }
-}
+const onClickOutsideHandler = [
+  () => {
+    indexActiveBlockInList.value = null
+  },
+  { ignore: [] },
+]
 
-const openPopupCreate = (type) => {
-    createBlockType.value = type
-    popupStore.disableScroll('createBlockPopup')
-}
-
-const createNewBlock = () => {
-    popupStore.enableScroll('createBlockPopup')
-    data.value.blocks.push({...paramsNewBlock.value})
-    createBlockType.value = null
-    clearParams()
-}
-
-const clearParams = () => {
-    paramsNewBlock.value = {
-        styles: {
-
-        }
-    }
-}
-
+onMounted(() => {
+    onClickOutsideHandler[1].ignore.push(document.querySelector('.action_redactor'));
+    onClickOutsideHandler[1].ignore.push(document.querySelector('.createBlockPopup'));
+})
 </script>
 
 <style lang="scss" scoped>

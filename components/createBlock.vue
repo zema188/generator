@@ -8,39 +8,58 @@
             <div class="create__settings-item">
 
                 <create-title
-                    v-if="createBlockType === 'title'"
+                    v-if="blockType === 'title'"
                     :paramsNewBlock="paramsNewBlock"
+                    :activeBlockInList="activeBlockInList"
                 />
 
                 <create-text-p
-                    v-if="createBlockType === 'textP'"
+                    v-if="blockType === 'textP'"
                     :paramsNewBlock="paramsNewBlock"
+                    :activeBlockInList="activeBlockInList"
                 />
 
                 <create-link
-                    v-if="createBlockType === 'link'"
+                    v-if="blockType === 'link'"
                     :paramsNewBlock="paramsNewBlock"
+                    :activeBlockInList="activeBlockInList"
                 />
 
                 <create-list
-                    v-if="createBlockType === 'list'"
+                    v-if="blockType === 'list'"
                     :paramsNewBlock="paramsNewBlock"
+                    :activeBlockInList="activeBlockInList"
                 />
 
+                <create-nav
+                    v-if="blockType === 'nav'"
+                    :paramsNewBlock="paramsNewBlock"
+                    :activeBlockInList="activeBlockInList"
+                />
             </div>
         </div>
 
-        <button class="create__btn btn btn_blue"
+        <button
+            v-if="!activeBlockInList"
+            class="create__btn btn btn_blue"
             @click="emits('createNewBlock')"
         >
             Создать
+        </button>
+        <button
+            v-else
+            class="create__btn btn btn_blue"
+            @click="emits('editActiveBlock')"
+        >
+
+            Сохранить
         </button>
     </div>
 </template>
 
 <script setup>
 const props = defineProps({
-    createBlockType: {
+    blockType: {
         type: [null, String],
         required: true,
     },
@@ -48,10 +67,15 @@ const props = defineProps({
     paramsNewBlock: {
         type: Object,
         required: true,
-    }
+    },
+
+    activeBlockInList: {
+        type: [null, Object],
+        required: true
+    },
 })
 
-const emits = defineEmits('createNewBlock')
+const emits = defineEmits('createNewBlock', 'editActiveBlock')
 </script>
 
 <style lang="scss" scoped>

@@ -11,30 +11,35 @@
                     v-if="blockType === 'title'"
                     :paramsNewBlock="paramsNewBlock"
                     :activeBlockInList="activeBlockInList"
+                    :classes="props.classes"
                 />
 
                 <create-text-p
                     v-if="blockType === 'textP'"
                     :paramsNewBlock="paramsNewBlock"
                     :activeBlockInList="activeBlockInList"
+                    :classes="props.classes"
                 />
 
                 <create-link
                     v-if="blockType === 'link'"
                     :paramsNewBlock="paramsNewBlock"
                     :activeBlockInList="activeBlockInList"
+                    :classes="props.classes"
                 />
 
                 <create-list
                     v-if="blockType === 'list'"
                     :paramsNewBlock="paramsNewBlock"
                     :activeBlockInList="activeBlockInList"
+                    :classes="props.classes"
                 />
 
                 <create-nav
                     v-if="blockType === 'nav'"
                     :paramsNewBlock="paramsNewBlock"
                     :activeBlockInList="activeBlockInList"
+                    :classes="props.classes"
                 />
             </div>
         </div>
@@ -73,6 +78,11 @@ const props = defineProps({
         type: [null, Object],
         required: true
     },
+
+    classes: {
+        type: [null, Object],
+        required: true
+    }
 })
 
 const emits = defineEmits('createNewBlock', 'editActiveBlock')

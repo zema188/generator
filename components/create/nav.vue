@@ -64,7 +64,7 @@
 <script setup>
 import useCreateBlockEntity from '~/mixins/createBlockEntity';
 
-const { textAlign, fontWeight, listStyle } = useCreateBlockEntity()
+const { textAlign, fontWeight, listStyle, createClass } = useCreateBlockEntity()
 
 const props = defineProps({
     paramsNewBlock: {
@@ -76,6 +76,11 @@ const props = defineProps({
         type: [null, Object],
         required: true
     },
+
+    classes: {
+        type: [null, Object],
+        required: true
+    }
 })
 
 const childs = ref([
@@ -95,6 +100,7 @@ const addChild = () => {
 }
 
 const deleteChild = (index) => {
+    console.log('test',index)
     childs.value.splice(index, 1)
 }
 
@@ -102,6 +108,7 @@ const initParams = () => {
     props.paramsNewBlock.tag = 'nav'
     props.paramsNewBlock.typeTag = 'double-sided'
     props.paramsNewBlock.type = 'nav'
+    props.paramsNewBlock.class = createClass('nav', props.classes.nav)
     props.paramsNewBlock.innerHTML = ''
 
     props.paramsNewBlock.styles = {
@@ -110,6 +117,7 @@ const initParams = () => {
         'font-weight': 'bold',
         'color': 'green',
     }
+
     props.paramsNewBlock.childs = {
         info: {
             tag: 'a',

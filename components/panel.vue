@@ -32,7 +32,7 @@
             </div>
         </div>
 
-        <div class="action action_redactor" v-if="activeTabBlock === 'redactor'">
+        <div class="action action_redactor" v-show="activeTabBlock === 'redactor'">
             <button class="up"
                 :disabled="indexActiveBlockInList === null || indexActiveBlockInList === 0"
                 @click="emits('moveBlock', 'up')"
@@ -62,11 +62,11 @@
             </button>
         </div>
 
-        <div class="action action_html" v-if="activeTabBlock === 'HTML'">
+        <!-- <div class="action action_html" v-if="activeTabBlock === 'HTML'">
             <button class="btn btn_blue">
                 Скопировать код
             </button>
-        </div>
+        </div> -->
     </div>
 </template>
 

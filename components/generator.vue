@@ -25,22 +25,23 @@
             @openPopupEdit="openPopupEdit()"
         />
 
-        <list-blocks
-            v-if="activeTabBlock === 'redactor'"
-            :data="data"
-            v-model:indexActiveBlockInList="indexActiveBlockInList"
-            v-model:activeBlockInList="activeBlockInList"
-            v-on-click-outside="onClickOutsideHandler"
-        />
+            <list-blocks
+                v-if="activeTabBlock === 'redactor'"
+                :data="data"
+                v-model:indexActiveBlockInList="indexActiveBlockInList"
+                v-model:activeBlockInList="activeBlockInList"
+                v-on-click-outside="onClickOutsideHandler"
+            />
 
-        <html-code
-            v-if="activeTabBlock === 'HTML'"
-            :data="data"
-        />
+            <html-code
+                v-if="activeTabBlock === 'HTML'"
+                :data="data"
+            />
 
-        <css-code
-            v-if="activeTabBlock === 'CSS'"
-        />
+            <css-code
+                v-if="activeTabBlock === 'CSS'"
+                :data="data"
+            />
     </div>
 
     <popup
@@ -51,6 +52,7 @@
             :blockType="blockType"
             :paramsNewBlock="paramsNewBlock"
             :activeBlockInList="activeBlockInList"
+            :classes="data.classes"
             @createNewBlock="createNewBlock()"
             @editActiveBlock="editActiveBlock()"
         />
@@ -87,7 +89,7 @@ const paramsNewBlock = ref({
     }
 })
 
-let activeTabBlock = ref('HTML')
+let activeTabBlock = ref('redactor')
 let indexActiveBlockInList = ref(null)
 let activeBlockInList = ref(null)
 let blockType = ref(null)
@@ -115,12 +117,14 @@ const openPopupCreate = (type) => {
 const createNewBlock = () => {
     popupStore.enableScroll('createBlockPopup')
     data.value.blocks.push({...paramsNewBlock.value})
+    data.value.classes[blockType.value]++
     blockType.value = null
     clearParams()
 }
 
 const editActiveBlock = () => {
     data.value.blocks[indexActiveBlockInList.value] = JSON.parse(JSON.stringify(paramsNewBlock.value))
+    activeBlockInList.value = JSON.parse(JSON.stringify(data.value.blocks[indexActiveBlockInList.value]))
 }
 
 const deleteBlock = () => {
@@ -152,6 +156,13 @@ const closePopup = () => {
 }
 
 const data = ref({
+    classes: {
+        title: 1,
+        list: 1,
+        link: 1,
+        nav: 1,
+    },
+
     blocks: [
         {
             tag: 'h1',
@@ -165,47 +176,82 @@ const data = ref({
                 'font-size': '25px',
             }
         },
+        // {
+        //     tag: 'ul',
+        //     typeTag: 'double-sided',
+        //     innerHTML: null,
+        //     class: 'list-1',
+        //     type: 'list',
+        //     styles: {
+        //         'list-style': 'disc',
+        //         'text-align': 'left',
+        //         'font-weight': '500',
+        //         'color': 'green',
+        //     },
+        //     childs: {
+        //         info: {
+        //             tag: 'li',
+        //             class: 'list-1__item',
+        //             typeTag: 'double-sided',
+        //         },
+        //         items: [
+        //             {
+        //                 innerHTML: 'Элемент списка №1',
+        //             },
+        //             {
+        //                 innerHTML: 'Элемент списка №2',
+        //             },
+        //             {
+        //                 innerHTML: 'Элемент списка №3',
+        //                 styles: {
+        //                     'font-weight': '500',
+        //                     'color': 'red',
+        //                 },
+        //             },
+        //             {
+        //                 innerHTML: 'Элемент списка №4',
+        //             },
+        //         ],
+        //         styles: {
+        //             'text-align': 'center',
+        //             'font-weight': '500',
+        //             'color': 'green',
+        //         }
+        //     },
+        // },
         {
-            tag: 'ul',
+            tag: 'nav',
             typeTag: 'double-sided',
             innerHTML: null,
-            class: 'list-1',
-            type: 'list',
-            styles: {
-                'list-style': 'disc',
-                'text-align': 'left',
-                'font-weight': '500',
-                'color': 'green',
-            },
+            class: 'nav-1',
+            type: 'nav',
+            styles: {},
             childs: {
                 info: {
-                    tag: 'li',
-                    class: 'list-1__item',
+                    tag: 'a',
+                    class: '',
                     typeTag: 'double-sided',
                 },
                 items: [
                     {
-                        innerHTML: 'Элемент списка №1',
-                    },
-                    {
-                        innerHTML: 'Элемент списка №2',
-                    },
-                    {
-                        innerHTML: 'Элемент списка №3',
-                        styles: {
-                            'font-weight': '500',
-                            'color': 'red',
+                        innerHTML: 'Ссылка в меню №1',
+                        attrs: {
+                            href: 'https://vk.com/'
                         },
                     },
                     {
-                        innerHTML: 'Элемент списка №4',
+                        innerHTML: 'Ссылка в меню №2',
+                        attrs: {
+                            href: 'https://vk.com/'
+                        },
+                    },
+                    {
+                        innerHTML: 'Ссылка в меню №3',
+                        attrs: {
+                            href: 'https://vk.com/'
+                        },
                     },
                 ],
-                styles: {
-                    'text-align': 'center',
-                    'font-weight': '500',
-                    'color': 'green',
-                }
             },
         },
         {
@@ -217,94 +263,22 @@ const data = ref({
             attrs: {
                 href: 'https://vk.com/'
             },
-            styles: {},
+            styles: {
+                'text-align': 'left',
+                'font-weight': 'bold',
+                'color': 'Blue',
+                'text-decoration': 'underline'
+            },
         },
         {
-            tag: 'nav',
+            tag: 'p',
             typeTag: 'double-sided',
-            innerHTML: null,
-            class: 'nav-1',
-            type: 'nav',
-            childs: {
-                info: {
-                    tag: 'a',
-                    class: '',
-                    typeTag: 'double-sided',
-                },
-                items: [
-                    {
-                        innerHTML: 'Элемент списка №1',
-                        attrs: {
-                            href: 'https://vk.com/'
-                        },
-                    },
-                    {
-                        innerHTML: 'Элемент списка №1',
-                        attrs: {
-                            href: 'https://vk.com/'
-                        },
-                    },
-                    {
-                        innerHTML: 'Элемент списка №1',
-                        attrs: {
-                            href: 'https://vk.com/'
-                        },
-                    },
-                    {
-                        innerHTML: 'Элемент списка №1',
-                        attrs: {
-                            href: 'https://vk.com/'
-                        },
-                    },
-                    {
-                        innerHTML: 'Элемент списка №1',
-                        attrs: {
-                            href: 'https://vk.com/'
-                        },
-                    },
-                    {
-                        innerHTML: 'Элемент списка №1',
-                        attrs: {
-                            href: 'https://vk.com/'
-                        },
-                    },
-                    {
-                        innerHTML: 'Элемент списка №1',
-                        attrs: {
-                            href: 'https://vk.com/'
-                        },
-                    },
-                    {
-                        innerHTML: 'Элемент списка №1',
-                        attrs: {
-                            href: 'https://vk.com/'
-                        },
-                    },
-                    {
-                        innerHTML: 'Элемент списка №1',
-                        attrs: {
-                            href: 'https://vk.com/'
-                        },
-                    },
-                    {
-                        innerHTML: 'Элемент списка №1',
-                        attrs: {
-                            href: 'https://vk.com/'
-                        },
-                    },
-                    {
-                        innerHTML: 'Элемент списка №1',
-                        attrs: {
-                            href: 'https://vk.com/'
-                        },
-                    },
-                    {
-                        innerHTML: 'Элемент списка №1',
-                        attrs: {
-                            href: 'https://vk.com/'
-                        },
-                    },
-                ],
+            innerHTML: 'Идейные соображения высшего порядка, а также постоянный количественный рост и сфера нашей активности играет важную роль в формировании форм развития. Не следует, однако забывать, что укрепление и развитие структуры представляет собой интересный эксперимент проверки системы обучения кадров, соответствует насущным потребностям. ',
+            class: 'text-1',
+            type: 'textP',
+            styles: {
+                'text-align': 'left',
+                'font-weight': 'bold',
             },
         },
         // {
@@ -317,7 +291,11 @@ const data = ref({
         //         src: 'https://rgo.ru/upload/content_block/images/9ca8302358b777e143cd6e314058266b/7065323d0aa2e3fa6e8764c4f57f1655.jpg?itok=sawvdjq3',
         //         alt: 'птичка'
         //     },
-        //     styles: {},
+        //     styles: {
+        //         'max-width': '700px',
+        //         'width': '100%',
+        //         'object-fit': 'contain',
+        //     },
         // }
     ],
 })

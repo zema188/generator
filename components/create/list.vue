@@ -49,7 +49,7 @@
 <script setup>
 import useCreateBlockEntity from '~/mixins/createBlockEntity';
 
-const { textAlign, fontWeight, listStyle } = useCreateBlockEntity()
+const { textAlign, fontWeight, listStyle, createClass } = useCreateBlockEntity()
 
 const props = defineProps({
     paramsNewBlock: {
@@ -61,6 +61,11 @@ const props = defineProps({
         type: [null, Object],
         required: true
     },
+
+    classes: {
+        type: [null, Object],
+        required: true
+    }
 })
 
 const childs = ref([
@@ -70,7 +75,7 @@ const childs = ref([
 ])
 
 const addChild = () => {
-    childs.value.push({})
+    props.paramsNewBlock.childs.items.push({})
 }
 
 const deleteChild = (index) => {
@@ -78,10 +83,10 @@ const deleteChild = (index) => {
 }
 
 const initParams = () => {
-    console.log('test')
     props.paramsNewBlock.tag = 'ul'
     props.paramsNewBlock.typeTag = 'double-sided'
     props.paramsNewBlock.type = 'list'
+    props.paramsNewBlock.class = createClass('list', props.classes.list)
     props.paramsNewBlock.innerHTML = ''
 
     props.paramsNewBlock.styles = {

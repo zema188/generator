@@ -77,7 +77,7 @@
 <script setup>
 import useCreateBlockEntity from '~/mixins/createBlockEntity';
 
-const { textAlign, color, fontWeight } = useCreateBlockEntity()
+const { textAlign, color, fontWeight, createClass } = useCreateBlockEntity()
 
 const props = defineProps({
     paramsNewBlock: {
@@ -89,14 +89,19 @@ const props = defineProps({
         type: [null, Object],
         required: true
     },
+
+    classes: {
+        type: [null, Object],
+        required: true
+    }
 })
 
 const initParams = () => {
     props.paramsNewBlock.tag = 'a'
     props.paramsNewBlock.typeTag = 'double-sided'
     props.paramsNewBlock.type = 'link'
+    props.paramsNewBlock.class = createClass('link', props.classes.link)
     props.paramsNewBlock.innerHTML = ''
-
     props.paramsNewBlock.attrs.href = ''
 
     props.paramsNewBlock.styles['font-size'] = '16px';

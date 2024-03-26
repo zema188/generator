@@ -176,56 +176,16 @@ const data = ref({
                 'font-size': '25px',
             }
         },
-        // {
-        //     tag: 'ul',
-        //     typeTag: 'double-sided',
-        //     innerHTML: null,
-        //     class: 'list-1',
-        //     type: 'list',
-        //     styles: {
-        //         'list-style': 'disc',
-        //         'text-align': 'left',
-        //         'font-weight': '500',
-        //         'color': 'green',
-        //     },
-        //     childs: {
-        //         info: {
-        //             tag: 'li',
-        //             class: 'list-1__item',
-        //             typeTag: 'double-sided',
-        //         },
-        //         items: [
-        //             {
-        //                 innerHTML: 'Элемент списка №1',
-        //             },
-        //             {
-        //                 innerHTML: 'Элемент списка №2',
-        //             },
-        //             {
-        //                 innerHTML: 'Элемент списка №3',
-        //                 styles: {
-        //                     'font-weight': '500',
-        //                     'color': 'red',
-        //                 },
-        //             },
-        //             {
-        //                 innerHTML: 'Элемент списка №4',
-        //             },
-        //         ],
-        //         styles: {
-        //             'text-align': 'center',
-        //             'font-weight': '500',
-        //             'color': 'green',
-        //         }
-        //     },
-        // },
         {
             tag: 'nav',
             typeTag: 'double-sided',
             innerHTML: null,
             class: 'nav-1',
             type: 'nav',
-            styles: {},
+            styles: {
+                'list-style': 'bengali',
+                'font-size': '30px',
+            },
             childs: {
                 info: {
                     tag: 'a',
@@ -255,6 +215,46 @@ const data = ref({
             },
         },
         {
+            tag: 'ul',
+            typeTag: 'double-sided',
+            innerHTML: null,
+            class: 'list-1',
+            type: 'list',
+            styles: {
+                'list-style': 'disc',
+                'text-align': 'left',
+                'font-weight': 'bold',
+            },
+            childs: {
+                info: {
+                    tag: 'li',
+                    class: 'list-1__item',
+                    typeTag: 'double-sided',
+                },
+                items: [
+                    {
+                        innerHTML: 'Элемент списка №1',
+                    },
+                    {
+                        innerHTML: 'Элемент списка №2',
+                    },
+                    {
+                        innerHTML: 'Элемент списка №3',
+                        styles: {
+                        },
+                    },
+                    {
+                        innerHTML: 'Элемент списка №4',
+                    },
+                ],
+                styles: {
+                    'text-align': 'center',
+                    'font-weight': '500',
+                    'color': 'green',
+                }
+            },
+        },
+        {
             tag: 'a',
             typeTag: 'double-sided',
             innerHTML: 'Ссылка на другую страницу',
@@ -270,17 +270,17 @@ const data = ref({
                 'text-decoration': 'underline'
             },
         },
-        {
-            tag: 'p',
-            typeTag: 'double-sided',
-            innerHTML: 'Идейные соображения высшего порядка, а также постоянный количественный рост и сфера нашей активности играет важную роль в формировании форм развития. Не следует, однако забывать, что укрепление и развитие структуры представляет собой интересный эксперимент проверки системы обучения кадров, соответствует насущным потребностям. ',
-            class: 'text-1',
-            type: 'textP',
-            styles: {
-                'text-align': 'left',
-                'font-weight': 'bold',
-            },
-        },
+        // {
+        //     tag: 'p',
+        //     typeTag: 'double-sided',
+        //     innerHTML: 'Идейные соображения высшего порядка, а также постоянный количественный рост и сфера нашей активности играет важную роль в формировании форм развития. Не следует, однако забывать, что укрепление и развитие структуры представляет собой интересный эксперимент проверки системы обучения кадров, соответствует насущным потребностям. ',
+        //     class: 'text-1',
+        //     type: 'textP',
+        //     styles: {
+        //         'text-align': 'left',
+        //         'font-weight': 'bold',
+        //     },
+        // },
         // {
         //     tag: 'img',
         //     typeTag: 'one-sided',

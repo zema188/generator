@@ -83,16 +83,8 @@ const props = defineProps({
     }
 })
 
-const childs = ref([
-    {
-        attrs: {
-            
-        }
-    },
-])
-
 const addChild = () => {
-    childs.value.push({
+    props.paramsNewBlock.childs.items.push({
         attrs: {
             
         }
@@ -100,8 +92,7 @@ const addChild = () => {
 }
 
 const deleteChild = (index) => {
-    console.log('test',index)
-    childs.value.splice(index, 1)
+    props.paramsNewBlock.childs.items.splice(index, 1)
 }
 
 const initParams = () => {
@@ -113,9 +104,10 @@ const initParams = () => {
 
     props.paramsNewBlock.styles = {
         'list-style': 'none',
-        'text-align': 'left',
         'font-weight': 'bold',
-        'color': 'green',
+        'display': 'flex',
+        'flex-wrap': 'wrap',
+        'gap': '10px',
     }
 
     props.paramsNewBlock.childs = {
@@ -123,7 +115,13 @@ const initParams = () => {
             tag: 'a',
             type: 'double-sided',
         },
-        items: childs.value,
+        items: [
+            {
+                attrs: {
+                    
+                }
+            }
+        ]
     }
 }
 

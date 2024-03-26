@@ -15,6 +15,9 @@
 </template>
 
 <script setup>
+import createNav from '@/blocks/custom/nav'
+import createDoubleSidedBlock from '@/blocks/default/doubleSided.js'
+
 const props = defineProps({
     block: {
         type: Object,
@@ -36,65 +39,20 @@ const preBlock = ref(null)
 const customBlocks = ['nav']
 
 const createBlock = computed(() => {
-    let generatedBlock = '';
-    let innerHTMLBlock = '';
-
     let custom = customBlocks.includes(props.block.tag);
+    let generatedBlock = '';
 
-    if (props.block.innerHTML) {
-        innerHTMLBlock = props.block.innerHTML;
-    } else if (props.block.childs) {
-        let childsItems = [];
-
-        if (custom) {
-            if (props.block.tag === 'nav') {
-                childsItems = [...props.block.childs.items];
-            }
-        } else {
-            childsItems = [...props.block.childs.items];
-        }
-
-        childsItems.forEach((el, index) => {
-            const styles = el.styles && !props.pre ? Object.entries(el.styles).map(([key, value]) => `${key}: ${value}`).join(';') : '';
-            const attrs = el.attrs ? Object.entries(el.attrs).map(([key, value]) => `${key}="${value}"`).join(' ') : '';
-
-            if (custom) {
-                if (props.block.tag === 'nav') {
-                    innerHTMLBlock += `\n       <li>
-            <${props.block.childs.info.tag} class=${props.block.childs.info.class} style="${styles}" ${attrs}>
-                ${el.innerHTML}
-            </${props.block.childs.info.tag}>
-        </li>`;
-                }
-            } else {
-                    innerHTMLBlock += `\n   <${props.block.childs.info.tag} class=${props.block.childs.info.class} style="${styles}" ${attrs}>
-        ${el.innerHTML}
-    </${props.block.childs.info.tag}>`;
-            }
-        });
-    }
-    const styles = props.block.styles && !props.pre ? Object.entries(props.block.styles).map(([key, value]) => `${key}: ${value}`).join(';') : '';
+    const styles = props.block.styles && !props.pre ? Object.entries(props.block.styles).map(([key, value]) => `${key}: ${value}`).join('; ') : '';
     const attrs = props.block.attrs ? Object.entries(props.block.attrs).map(([key, value]) => `${key}="${value}"`).join(' ') : '';
 
-    if (props.block.typeTag === 'double-sided') {
-        if (custom) {
-            if (props.block.tag === 'nav') {
-                generatedBlock = `<${props.block.tag} class=${props.block.class} ${attrs}>
-    <ul style="${styles}">
-        ${innerHTMLBlock}
-    </ul>
-</${props.block.tag}>`;
-            } else {
-                generatedBlock = `
-                    <${props.block.tag} class=${props.block.class} style="${styles}" ${attrs}>
-                        ${innerHTMLBlock}
-                    </${props.block.tag}>`;
-            }
-        } else {
-            generatedBlock = `<${props.block.tag} class=${props.block.class} style="${styles}" ${attrs}>
-    ${innerHTMLBlock}
-</${props.block.tag}>`;
+    if(custom) {
+
+        if (props.block.tag === 'nav') {
+            generatedBlock = createNav(props.block, styles, attrs, props.pre)
         }
+
+    } else if (props.block.typeTag === 'double-sided') {
+        generatedBlock = createDoubleSidedBlock(props.block, styles, attrs, props.pre)
     } else {
         generatedBlock = `<${props.block.tag} class=${props.block.class} style="${styles}" ${attrs}/>`;
     }

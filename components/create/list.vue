@@ -68,18 +68,12 @@ const props = defineProps({
     }
 })
 
-const childs = ref([
-    {
-
-    },
-])
-
 const addChild = () => {
     props.paramsNewBlock.childs.items.push({})
 }
 
 const deleteChild = (index) => {
-    childs.value.splice(index, 1)
+    props.paramsNewBlock.childs.items.splice(index, 1)
 }
 
 const initParams = () => {
@@ -100,7 +94,11 @@ const initParams = () => {
             tag: 'li',
             type: 'double-sided',
         },
-        items: childs.value,
+        items: [
+            {
+                
+            },
+        ],
         styles: {
             'text-allign': 'center',
             'font-weight': 'bold',

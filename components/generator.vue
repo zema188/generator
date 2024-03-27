@@ -4,6 +4,30 @@
             Генератор семантического кода
         </h1>
 
+        <div class="header__btns">
+
+            <button class="btn btn_green btn_small"
+                @click="downloadProject()"
+            >
+                Скачать архив проекта
+            </button>
+
+            <button class="btn btn_green btn_small copy"
+                @click="copyHtmlCode()"
+            >
+                Скопировать HTML
+                <icons-copy/>
+            </button>
+
+            <button class="btn btn_green btn_small copy"
+                @click="copyCssCode()"
+            >
+                Скопировать CSS
+                <icons-copy/>
+            </button>
+
+        </div>
+
         <div class="btns">
             <button
                 v-for="btn of btns"
@@ -25,23 +49,25 @@
             @openPopupEdit="openPopupEdit()"
         />
 
-            <list-blocks
-                v-if="activeTabBlock === 'redactor'"
-                :data="data"
-                v-model:indexActiveBlockInList="indexActiveBlockInList"
-                v-model:activeBlockInList="activeBlockInList"
-                v-on-click-outside="onClickOutsideHandler"
-            />
+        <list-blocks
+            v-show="activeTabBlock === 'redactor'"
+            :data="data"
+            v-model:indexActiveBlockInList="indexActiveBlockInList"
+            v-model:activeBlockInList="activeBlockInList"
+            v-on-click-outside="onClickOutsideHandler"
+        />
 
-            <html-code
-                v-if="activeTabBlock === 'HTML'"
-                :data="data"
-            />
+        <html-code
+            v-show="activeTabBlock === 'HTML'"
+            :data="data"
+            v-model="htmlText"
+        />
 
-            <css-code
-                v-if="activeTabBlock === 'CSS'"
-                :data="data"
-            />
+        <css-code
+            v-show="activeTabBlock === 'CSS'"
+            :data="data"
+            v-model="cssText"
+        />
     </div>
 
     <popup
@@ -61,7 +87,10 @@
 
 <script setup>
 import { vOnClickOutside } from '@vueuse/components'
-import { usePopup } from '~/stores/popup'
+import { usePopup } from '@/stores/popup'
+import JSZip from 'jszip';
+import resetStyles from '@/helpers/resetStyle.js'
+import htmlDefaultCode from '@/helpers/htmlDefaultCode.js'
 
 const popupStore = usePopup()
 
@@ -93,6 +122,8 @@ let activeTabBlock = ref('redactor')
 let indexActiveBlockInList = ref(null)
 let activeBlockInList = ref(null)
 let blockType = ref(null)
+let cssText = ref('')
+let htmlText = ref('')
 
 const moveBlock = (direction) => {
     if (direction === 'up' && indexActiveBlockInList.value > 0) {
@@ -155,6 +186,49 @@ const closePopup = () => {
     blockType.value = null
 }
 
+const downloadProject = () => {
+  const zip = new JSZip();
+
+  zip.file('index.html', htmlDefaultCode(htmlText.value));
+
+  zip.file('style.css', `
+    ${resetStyles}
+    ${cssText.value}
+  `);
+
+  zip.generateAsync({ type: 'blob' })
+    .then(content => {
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(content);
+      link.download = 'my-project.zip';
+      link.click();
+    })
+    .catch(error => {
+      console.error('Error creating ZIP archive:', error);
+    });
+};
+
+const copyHtmlCode = () => {
+    navigator.clipboard.writeText(htmlDefaultCode(htmlText.value))
+}
+
+const copyCssCode = () => {
+    navigator.clipboard.writeText(cssText.value)
+}
+
+
+const onClickOutsideHandler = [
+  () => {
+    indexActiveBlockInList.value = null
+  },
+  { ignore: [] },
+]
+
+onMounted(() => {
+    onClickOutsideHandler[1].ignore.push(document.querySelector('.action_redactor'));
+    onClickOutsideHandler[1].ignore.push(document.querySelector('.createBlockPopup'));
+})
+
 const data = ref({
     classes: {
         title: 1,
@@ -214,46 +288,46 @@ const data = ref({
                 ],
             },
         },
-        {
-            tag: 'ul',
-            typeTag: 'double-sided',
-            innerHTML: null,
-            class: 'list-1',
-            type: 'list',
-            styles: {
-                'list-style': 'disc',
-                'text-align': 'left',
-                'font-weight': 'bold',
-            },
-            childs: {
-                info: {
-                    tag: 'li',
-                    class: 'list-1__item',
-                    typeTag: 'double-sided',
-                },
-                items: [
-                    {
-                        innerHTML: 'Элемент списка №1',
-                    },
-                    {
-                        innerHTML: 'Элемент списка №2',
-                    },
-                    {
-                        innerHTML: 'Элемент списка №3',
-                        styles: {
-                        },
-                    },
-                    {
-                        innerHTML: 'Элемент списка №4',
-                    },
-                ],
-                styles: {
-                    'text-align': 'center',
-                    'font-weight': '500',
-                    'color': 'green',
-                }
-            },
-        },
+        // {
+        //     tag: 'ul',
+        //     typeTag: 'double-sided',
+        //     innerHTML: null,
+        //     class: 'list-1',
+        //     type: 'list',
+        //     styles: {
+        //         'list-style': 'disc',
+        //         'text-align': 'left',
+        //         'font-weight': 'bold',
+        //     },
+        //     childs: {
+        //         info: {
+        //             tag: 'li',
+        //             class: 'list-1__item',
+        //             typeTag: 'double-sided',
+        //         },
+        //         items: [
+        //             {
+        //                 innerHTML: 'Элемент списка №1',
+        //             },
+        //             {
+        //                 innerHTML: 'Элемент списка №2',
+        //             },
+        //             {
+        //                 innerHTML: 'Элемент списка №3',
+        //                 styles: {
+        //                 },
+        //             },
+        //             {
+        //                 innerHTML: 'Элемент списка №4',
+        //             },
+        //         ],
+        //         styles: {
+        //             'text-align': 'center',
+        //             'font-weight': '500',
+        //             'color': 'green',
+        //         }
+        //     },
+        // },
         {
             tag: 'a',
             typeTag: 'double-sided',
@@ -299,18 +373,6 @@ const data = ref({
         // }
     ],
 })
-
-const onClickOutsideHandler = [
-  () => {
-    indexActiveBlockInList.value = null
-  },
-  { ignore: [] },
-]
-
-onMounted(() => {
-    onClickOutsideHandler[1].ignore.push(document.querySelector('.action_redactor'));
-    onClickOutsideHandler[1].ignore.push(document.querySelector('.createBlockPopup'));
-})
 </script>
 
 <style lang="scss" scoped>
@@ -331,6 +393,17 @@ h1 {
         &.active {
             border-bottom: 3px solid #5589f8;
         }
+    }
+}
+
+.header__btns {
+    display: flex;
+    gap: 15px;
+    margin-top: 20px;
+}
+.copy {
+    & svg {
+        width: 20px;
     }
 }
 </style>

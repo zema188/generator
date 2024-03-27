@@ -7,17 +7,9 @@
                 {{ number }}
             </div>
         </div>
-        <div class="code">
-            <div
-                v-for="(item, index) of classesCode"
-                :key="index"
-                ref="itemRefs"
-            >
-                <pre>
-                    {{ item }}
-                </pre>
-            </div>
-        </div>
+        <pre class="code" ref="codeRef">
+            {{ classesCode }}
+        </pre>
     </div>
 </template>
 
@@ -27,23 +19,24 @@ const props = defineProps({
         type: Object,
         required: true
     },
+
+    modelValue: {
+        type: String,
+        required: true
+    }
 })
 
-const itemRefs = ref([])
+const emits = defineEmits('update:modelValue')
+
+const codeRef = ref(null)
 
 const quantityLines = computed(() => {
-    let lines = 0
-
-    itemRefs.value.forEach(el => {
-        lines += el.querySelector('pre').textContent.split("\n").length
-    });
-
-    return lines
+    return codeRef.value ? codeRef.value.textContent.split("\n").length : 0
 })
 
 const classesCode = computed(() => {
-    let classes = []
-
+    let text = ''
+    
     props.data.blocks.forEach((el, i) => {
         let styles = ''
 
@@ -62,23 +55,17 @@ const classesCode = computed(() => {
 
         let obj = ``
 
-        if(i === 0) {
             obj = `
 .${el.class} {          
     ${styles}
-}`
-        } else {
-            obj = `
-.${el.class} {          
-    ${styles}
-}`
-        }
-        classes.push(obj)
+}\n`
+        text += obj
     });
 
-    return classes
-})
+    emits('update:modelValue', text)
 
+    return text
+})
 </script>
 
 <style lang="scss" scoped>

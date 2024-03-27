@@ -28,16 +28,27 @@ const props = defineProps({
         type: Object,
         required: true
     },
+
+    modelValue: {
+        type: String,
+        required: true
+    }
 })
+
+const emits = defineEmits('update:modelValue')
 
 const itemRefs = ref([])
 
 const quantityLines = computed(() => {
     let lines = 0
+    let text = ''
 
     itemRefs.value.forEach(el => {
         lines += el.querySelector('pre').textContent.split("\n").length
+        text += el.querySelector('pre').textContent
     });
+
+    emits('update:modelValue', text)
 
     return lines
 })

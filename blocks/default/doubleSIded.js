@@ -1,4 +1,5 @@
 export default function generatedDoubleSidedBlock(block, styles, attrs, pre) {
+    console.log(attrs)
     let generatedBlock = ''
     let innerHTMLBlock = ''
 
@@ -35,8 +36,8 @@ export default function generatedDoubleSidedBlock(block, styles, attrs, pre) {
         
         });
     }
-generatedBlock = `<${block.tag} class=${block.class}${style}>
-${innerHTMLBlock}
+generatedBlock = `<${block.tag} class=${block.class}${style} ${attrs}>
+    ${innerHTMLBlock}
 </${block.tag}>`;
     return generatedBlock
 }

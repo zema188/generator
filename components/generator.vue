@@ -45,7 +45,7 @@
             :activeTabBlock="activeTabBlock"
             @moveBlock="direction => moveBlock(direction)"
             @openPopupCreate="type => openPopupCreate(type)"
-            @deleteBlock="deleteBlock()"
+            @deleteBlock="confirmDelete()"
             @openPopupEdit="openPopupEdit()"
         />
 
@@ -82,6 +82,26 @@
             @createNewBlock="createNewBlock()"
             @editActiveBlock="editActiveBlock()"
         />
+    </popup>
+
+    <popup
+        :name="'confirmDelete'"
+    >
+        <p>
+            Вы действительно хотите удалить блок ?
+        </p>
+        <div class="btns">
+            <button class="btn btn_red"
+                @click="deleteBlock()"
+            >
+                Удалить
+            </button>
+            <button class="btn btn_green"
+                @click="popupStore.enableScroll('confirmDelete')"
+            >
+                Отмена
+            </button>
+        </div>
     </popup>
 </template>
 
@@ -161,6 +181,11 @@ const editActiveBlock = () => {
 const deleteBlock = () => {
     data.value.blocks.splice(indexActiveBlockInList.value, 1)
     indexActiveBlockInList.value = null
+    popupStore.enableScroll('confirmDelete')
+}
+
+const confirmDelete = () => {
+    popupStore.disableScroll('confirmDelete')
 }
 
 const openPopupEdit = () => {
@@ -216,7 +241,6 @@ const copyCssCode = () => {
     navigator.clipboard.writeText(cssText.value)
 }
 
-
 const onClickOutsideHandler = [
   () => {
     indexActiveBlockInList.value = null
@@ -227,6 +251,7 @@ const onClickOutsideHandler = [
 onMounted(() => {
     onClickOutsideHandler[1].ignore.push(document.querySelector('.action_redactor'));
     onClickOutsideHandler[1].ignore.push(document.querySelector('.createBlockPopup'));
+    onClickOutsideHandler[1].ignore.push(document.querySelector('.confirmDelete'));
 })
 
 const data = ref({
@@ -257,7 +282,7 @@ const data = ref({
             class: 'nav-1',
             type: 'nav',
             styles: {
-                'list-style': 'bengali',
+                'list-style': 'disc',
                 'font-size': '30px',
             },
             childs: {
@@ -288,46 +313,46 @@ const data = ref({
                 ],
             },
         },
-        // {
-        //     tag: 'ul',
-        //     typeTag: 'double-sided',
-        //     innerHTML: null,
-        //     class: 'list-1',
-        //     type: 'list',
-        //     styles: {
-        //         'list-style': 'disc',
-        //         'text-align': 'left',
-        //         'font-weight': 'bold',
-        //     },
-        //     childs: {
-        //         info: {
-        //             tag: 'li',
-        //             class: 'list-1__item',
-        //             typeTag: 'double-sided',
-        //         },
-        //         items: [
-        //             {
-        //                 innerHTML: 'Элемент списка №1',
-        //             },
-        //             {
-        //                 innerHTML: 'Элемент списка №2',
-        //             },
-        //             {
-        //                 innerHTML: 'Элемент списка №3',
-        //                 styles: {
-        //                 },
-        //             },
-        //             {
-        //                 innerHTML: 'Элемент списка №4',
-        //             },
-        //         ],
-        //         styles: {
-        //             'text-align': 'center',
-        //             'font-weight': '500',
-        //             'color': 'green',
-        //         }
-        //     },
-        // },
+        {
+            tag: 'ul',
+            typeTag: 'double-sided',
+            innerHTML: null,
+            class: 'list-1',
+            type: 'list',
+            styles: {
+                'list-style': 'disc',
+                'text-align': 'left',
+                'font-weight': 'bold',
+            },
+            childs: {
+                info: {
+                    tag: 'li',
+                    class: 'list-1__item',
+                    typeTag: 'double-sided',
+                },
+                items: [
+                    {
+                        innerHTML: 'Элемент списка №1',
+                    },
+                    {
+                        innerHTML: 'Элемент списка №2',
+                    },
+                    {
+                        innerHTML: 'Элемент списка №3',
+                        styles: {
+                        },
+                    },
+                    {
+                        innerHTML: 'Элемент списка №4',
+                    },
+                ],
+                styles: {
+                    'text-align': 'center',
+                    'font-weight': '500',
+                    'color': 'green',
+                }
+            },
+        },
         {
             tag: 'a',
             typeTag: 'double-sided',
@@ -344,17 +369,17 @@ const data = ref({
                 'text-decoration': 'underline'
             },
         },
-        // {
-        //     tag: 'p',
-        //     typeTag: 'double-sided',
-        //     innerHTML: 'Идейные соображения высшего порядка, а также постоянный количественный рост и сфера нашей активности играет важную роль в формировании форм развития. Не следует, однако забывать, что укрепление и развитие структуры представляет собой интересный эксперимент проверки системы обучения кадров, соответствует насущным потребностям. ',
-        //     class: 'text-1',
-        //     type: 'textP',
-        //     styles: {
-        //         'text-align': 'left',
-        //         'font-weight': 'bold',
-        //     },
-        // },
+        {
+            tag: 'p',
+            typeTag: 'double-sided',
+            innerHTML: 'Идейные соображения высшего порядка, а также постоянный количественный рост и сфера нашей активности играет важную роль в формировании форм развития. Не следует, однако забывать, что укрепление и развитие структуры представляет собой интересный эксперимент проверки системы обучения кадров, соответствует насущным потребностям. ',
+            class: 'text-1',
+            type: 'textP',
+            styles: {
+                'text-align': 'left',
+                'font-weight': 'bold',
+            },
+        },
         // {
         //     tag: 'img',
         //     typeTag: 'one-sided',
@@ -404,6 +429,22 @@ h1 {
 .copy {
     & svg {
         width: 20px;
+    }
+}
+
+.confirmDelete {
+    & p {
+        font-size: 20px;
+        text-align: center;
+        font-weight: bold;
+    }
+    & .btns {
+        display: flex;
+        margin-top: 20px;
+        & .btn {
+            max-width: 150px;
+            padding: 10px 15px;
+        }
     }
 }
 </style>

@@ -31,7 +31,7 @@ const emits = defineEmits('update:modelValue')
 const codeRef = ref(null)
 
 const quantityLines = computed(() => {
-    return codeRef.value ? codeRef.value.textContent.split("\n").length : 0
+    return props.modelValue ? props.modelValue.split("\n").length : 0
 })
 
 const classesCode = computed(() => {

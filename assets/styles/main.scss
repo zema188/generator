@@ -57,6 +57,16 @@ input {
       background: #2c7070;
     }
   }
+  &_red {
+    background: #e22626;
+    color: #fff;
+    &:hover {
+      background: #b41a1a;
+    }
+    &:active {
+      background: #a00c0c;
+    }
+  }
 }
 
 .field {

@@ -9,8 +9,11 @@
         </span>
 
         <div class="input-w">
-            <input :value="modelValue" @input="$emit('update:modelValue', $event.target.value)">
 
+            <input :value="modelValue" @input="$emit('update:modelValue', $event.target.value)" v-if="!props.type || props.type === 'input'">
+            
+            <textarea :value="modelValue" @input="$emit('update:modelValue', $event.target.value)" v-if="props.type === 'textarea'"></textarea>
+            
             <button class="icon">
                 <slot name="icon">
 
@@ -26,7 +29,11 @@
             type: String,
             required: true
         },
-        icon: Boolean
+        icon: Boolean,
+        type: {
+            type: String,
+            required: false
+        }
     })
 </script>
 

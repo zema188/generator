@@ -1,7 +1,7 @@
 <template>
     <div class="list">
         <block
-            v-for="(item, index) of props.data.blocks"
+            v-for="(item, index) of props.data?.blocks"
             :key="index"
             :block="item"
             :isActive="props.indexActiveBlockInList === index"

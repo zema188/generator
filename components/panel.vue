@@ -30,6 +30,12 @@
             >
                 Меню
             </div>
+
+            <div class="panel__item"
+                @click="openPopupCreate('form')"
+            >
+                Форма
+            </div>
         </div>
 
         <div class="action action_redactor" v-show="activeTabBlock === 'redactor'">

@@ -37,7 +37,7 @@ const quantityLines = computed(() => {
 const classesCode = computed(() => {
     let text = ''
     
-    props.data.blocks.forEach((el, i) => {
+    props.data.blocks?.forEach((el, i) => {
         let styles = ''
 
         if (el.styles) {
@@ -60,6 +60,20 @@ const classesCode = computed(() => {
     ${styles}
 }\n`
         text += obj
+
+        if(el.title?.styles) {
+            let stylesTitle = ''
+            for (const [key, value] of Object.entries(el.title.styles)) {
+                stylesTitle += `\n    ${key}: ${value};`
+            }
+            let obj = ``
+
+            obj = `
+.${el.title.class} {          
+    ${stylesTitle}
+}\n`
+        text += obj
+        }
     });
 
     emits('update:modelValue', text)

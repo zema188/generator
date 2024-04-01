@@ -5,7 +5,7 @@
   margin: 0 auto;
 }
 
-input {
+input, textarea {
   width: 100%;
   display: block;
   border: 1px solid #969696;
@@ -114,3 +114,23 @@ select {
     }
   }
 }
+
+.form__field {
+  margin-bottom: 10px;
+  & label {
+    font-weight: bold;
+  }
+}
+
+// .list {
+//   & .block {
+//     &:first-child {
+//       & form {
+//         border: 1px solid #969696;
+//         padding: 25px;
+//         border-radius: 12px;
+//       }
+//     }
+
+//   }
+// }

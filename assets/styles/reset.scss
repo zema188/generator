@@ -46,6 +46,10 @@ input, button, textarea {
   line-height: inherit;
 }
 
+textarea {
+  resize: none;
+}
+
 input::-ms-clear {
   display: none;
 }

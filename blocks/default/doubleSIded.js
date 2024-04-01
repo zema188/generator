@@ -1,11 +1,9 @@
 export default function generatedDoubleSidedBlock(block, styles, attrs, pre) {
-    console.log(attrs)
     let generatedBlock = ''
     let innerHTMLBlock = ''
 
 
     let style = !pre ? ` style="${styles}"` : ''
-
 
     if (block.innerHTML) {
         innerHTMLBlock = block.innerHTML;
@@ -23,8 +21,6 @@ export default function generatedDoubleSidedBlock(block, styles, attrs, pre) {
             let breakStr = '\n'
 
             let style = !pre ? ` style="${styles}"` : ''
-
-            console.log('test1', style)
 
             if(index === 0) breakStr = ''
 

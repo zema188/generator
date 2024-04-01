@@ -16,6 +16,7 @@
                 <template v-slot:title>
                     {{ index + 1}} Элемент
                 </template>
+                
                 <template v-slot:icon>
                     <icons-cross
                         @click="deleteChild(index)"

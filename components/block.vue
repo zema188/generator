@@ -16,6 +16,7 @@
 
 <script setup>
 import createNav from '@/blocks/custom/nav'
+import createForm from '@/blocks/custom/form'
 import createDoubleSidedBlock from '@/blocks/default/doubleSided.js'
 
 const props = defineProps({
@@ -36,7 +37,7 @@ const props = defineProps({
 })
 
 const preBlock = ref(null)
-const customBlocks = ['nav']
+const customBlocks = ['nav', 'form']
 
 const createBlock = computed(() => {
     let custom = customBlocks.includes(props.block.tag);
@@ -46,9 +47,12 @@ const createBlock = computed(() => {
     const attrs = props.block.attrs ? Object.entries(props.block.attrs).map(([key, value]) => `${key}="${value}"`).join(' ') : '';
 
     if(custom) {
-
         if (props.block.tag === 'nav') {
             generatedBlock = createNav(props.block, styles, attrs, props.pre)
+        }
+
+        else if (props.block.tag === 'form') {
+            generatedBlock = createForm(props.block, styles, attrs, props.pre)
         }
 
     } else if (props.block.typeTag === 'double-sided') {
@@ -76,9 +80,9 @@ onMounted(() => {
     margin-bottom: 1px;
     &.active {
         > :first-child {
-            border-color: #ff0000;
+            border-color: #ff0000 !important;
             &:hover {
-                border-color: #ff0000;
+                border-color: #ff0000 !important;
             }
         }
     }
@@ -88,7 +92,7 @@ onMounted(() => {
         padding: 2px 2px;
         transition: .2s;
         &:hover {
-            border-color: #d87d7d;
+            border-color: #d87d7d !important;
         }
     }
     &:global(a) {

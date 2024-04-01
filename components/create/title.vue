@@ -15,7 +15,7 @@
 
         <fields-select
             v-model="paramsNewBlock.tag"
-            :options="tags"
+            :options="titleTags"
         >
             <template v-slot:title>
                 HTML тег
@@ -69,7 +69,7 @@
 <script setup>
 import useCreateBlockEntity from '~/mixins/createBlockEntity';
 
-const { textAlign, color, fontWeight, createClass } = useCreateBlockEntity()
+const { textAlign, color, fontWeight, titleTags, createClass } = useCreateBlockEntity()
 
 const props = defineProps({
     paramsNewBlock: {
@@ -88,32 +88,6 @@ const props = defineProps({
     }
 })
 
-const tags = ref([
-    {
-        name: 'h1',
-        value: 'Заголовок 1-го уровня'
-    },
-    {
-        name: 'h2',
-        value: 'Заголовок 2-го уровня'
-    },
-    {
-        name: 'h3',
-        value: 'Заголовок 3-го уровня'
-    },
-    {
-        name: 'h4',
-        value: 'Заголовок 4-го уровня'
-    },
-    {
-        name: 'h5',
-        value: 'Заголовок 5-го уровня'
-    },
-    {
-        name: 'h6',
-        value: 'Заголовок 6-го уровня'
-    },
-]);
 
 const initParams = () => {
     props.paramsNewBlock.tag = 'h1'

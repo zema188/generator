@@ -2,14 +2,14 @@
     <div class="html">
         <div class="numbers">
             <div class="number"
-                v-for="number of quantityLines" :key="number"
+                v-for="number of quantityLines()" :key="number"
             >
                 {{ number }}
             </div>
         </div>
         <div class="code">
             <div
-                v-for="(item, index) of props.data.blocks"
+                v-for="(item, index) of props.data?.blocks"
                 :key="index"
                 ref="itemRefs"
             >
@@ -32,6 +32,11 @@ const props = defineProps({
     modelValue: {
         type: String,
         required: true
+    },
+
+    update: {
+        type: Boolean,
+        required: true
     }
 })
 
@@ -39,7 +44,7 @@ const emits = defineEmits('update:modelValue')
 
 const itemRefs = ref([])
 
-const quantityLines = computed(() => {
+const quantityLines = (() => {
     let lines = 0
     let text = ''
 
@@ -53,15 +58,15 @@ const quantityLines = computed(() => {
     return lines
 })
 
-const lines = computed(() => {
-    let lines = 0
-
-    itemRefs.value.forEach(el => {
-        lines += el.querySelector('pre').textContent
-    });
-
-    return lines
-})
+watch(
+  () => props.data.blocks,
+  () => {
+    setTimeout(() => {
+        quantityLines()
+    }, 0)
+  },
+  { deep: true }
+)
 </script>
 
 <style lang="scss" scoped>

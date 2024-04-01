@@ -41,6 +41,13 @@
                     :activeBlockInList="activeBlockInList"
                     :classes="props.classes"
                 />
+
+                <create-form
+                    v-if="blockType === 'form'"
+                    :paramsNewBlock="paramsNewBlock"
+                    :activeBlockInList="activeBlockInList"
+                    :classes="props.classes"
+                />
             </div>
         </div>
 

@@ -41,7 +41,7 @@
 
         <panel
             v-model:indexActiveBlockInList="indexActiveBlockInList"
-            :quantityBlocks="data.blocks.length"
+            :quantityBlocks="data.blocks?.length"
             :activeTabBlock="activeTabBlock"
             @moveBlock="direction => moveBlock(direction)"
             @openPopupCreate="type => openPopupCreate(type)"
@@ -111,6 +111,7 @@ import { usePopup } from '@/stores/popup'
 import JSZip from 'jszip';
 import resetStyles from '@/helpers/resetStyle.js'
 import htmlDefaultCode from '@/helpers/htmlDefaultCode.js'
+import { exampleData } from '@/blocks/example.js'
 
 const popupStore = usePopup()
 
@@ -129,6 +130,7 @@ const btns = ref([
     },
 ])
 
+const data = ref({})
 const paramsNewBlock = ref({
     styles: {
             
@@ -248,156 +250,19 @@ const onClickOutsideHandler = [
   { ignore: [] },
 ]
 
+const init = () => {
+    data.value = {...exampleData}
+    console.log(data.value)
+}
+
 onMounted(() => {
+    init()
+
     onClickOutsideHandler[1].ignore.push(document.querySelector('.action_redactor'));
     onClickOutsideHandler[1].ignore.push(document.querySelector('.createBlockPopup'));
     onClickOutsideHandler[1].ignore.push(document.querySelector('.confirmDelete'));
 })
 
-const data = ref({
-    classes: {
-        title: 1,
-        list: 1,
-        link: 1,
-        nav: 1,
-    },
-
-    blocks: [
-        {
-            tag: 'h1',
-            typeTag: 'double-sided',
-            innerHTML: 'Заголовок страницы',
-            class: 'title-1',
-            type: 'title',
-            styles: {
-                'text-align': 'center',
-                'font-weight': '800',
-                'font-size': '25px',
-            }
-        },
-        {
-            tag: 'nav',
-            typeTag: 'double-sided',
-            innerHTML: null,
-            class: 'nav-1',
-            type: 'nav',
-            styles: {
-                'list-style': 'disc',
-                'font-size': '30px',
-            },
-            childs: {
-                info: {
-                    tag: 'a',
-                    class: '',
-                    typeTag: 'double-sided',
-                },
-                items: [
-                    {
-                        innerHTML: 'Ссылка в меню №1',
-                        attrs: {
-                            href: 'https://vk.com/'
-                        },
-                    },
-                    {
-                        innerHTML: 'Ссылка в меню №2',
-                        attrs: {
-                            href: 'https://vk.com/'
-                        },
-                    },
-                    {
-                        innerHTML: 'Ссылка в меню №3',
-                        attrs: {
-                            href: 'https://vk.com/'
-                        },
-                    },
-                ],
-            },
-        },
-        {
-            tag: 'ul',
-            typeTag: 'double-sided',
-            innerHTML: null,
-            class: 'list-1',
-            type: 'list',
-            styles: {
-                'list-style': 'disc',
-                'text-align': 'left',
-                'font-weight': 'bold',
-            },
-            childs: {
-                info: {
-                    tag: 'li',
-                    class: 'list-1__item',
-                    typeTag: 'double-sided',
-                },
-                items: [
-                    {
-                        innerHTML: 'Элемент списка №1',
-                    },
-                    {
-                        innerHTML: 'Элемент списка №2',
-                    },
-                    {
-                        innerHTML: 'Элемент списка №3',
-                        styles: {
-                        },
-                    },
-                    {
-                        innerHTML: 'Элемент списка №4',
-                    },
-                ],
-                styles: {
-                    'text-align': 'center',
-                    'font-weight': '500',
-                    'color': 'green',
-                }
-            },
-        },
-        {
-            tag: 'a',
-            typeTag: 'double-sided',
-            innerHTML: 'Ссылка на другую страницу',
-            class: 'link-1',
-            type: 'link',
-            attrs: {
-                href: 'https://vk.com/'
-            },
-            styles: {
-                'text-align': 'left',
-                'font-weight': 'bold',
-                'color': 'Blue',
-                'text-decoration': 'underline'
-            },
-        },
-        {
-            tag: 'p',
-            typeTag: 'double-sided',
-            innerHTML: 'Идейные соображения высшего порядка, а также постоянный количественный рост и сфера нашей активности играет важную роль в формировании форм развития. Не следует, однако забывать, что укрепление и развитие структуры представляет собой интересный эксперимент проверки системы обучения кадров, соответствует насущным потребностям. ',
-            class: 'text-1',
-            type: 'textP',
-            styles: {
-                'text-align': 'left',
-                'font-weight': 'bold',
-            },
-        },
-        // {
-        //     tag: 'img',
-        //     typeTag: 'one-sided',
-        //     innerHTML: null,
-        //     class: 'image-1',
-        //     type: 'photo',
-        //     attrs: {
-        //         src: 'https://rgo.ru/upload/content_block/images/9ca8302358b777e143cd6e314058266b/7065323d0aa2e3fa6e8764c4f57f1655.jpg?itok=sawvdjq3',
-        //         alt: 'птичка'
-        //     },
-        //     styles: {
-        //         'max-width': '700px',
-        //         'width': '100%',
-        //         'object-fit': 'contain',
-        //     },
-        // }
-    ],
-})
 </script>
 
 <style lang="scss" scoped>

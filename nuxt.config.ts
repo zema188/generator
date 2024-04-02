@@ -13,5 +13,4 @@ export default defineNuxtConfig({
     ],
     '@pinia/nuxt',
   ],
-  ssr: false,
 })

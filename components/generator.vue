@@ -251,9 +251,25 @@ const onClickOutsideHandler = [
 ]
 
 const init = () => {
-    data.value = {...exampleData}
-    console.log(data.value)
+    // data.value = {...exampleData}
+    const dataFromDb = localStorage.getItem('generatorHtmlData')
+
+    if(dataFromDb) {
+        data.value = {...JSON.parse(dataFromDb)}
+    }
 }
+
+const updateDb = () => {
+    localStorage.setItem('generatorHtmlData', JSON.stringify(data.value))
+}
+
+watch(
+    data,
+    () => {
+        updateDb()
+    },
+    { deep: true}
+)
 
 onMounted(() => {
     init()

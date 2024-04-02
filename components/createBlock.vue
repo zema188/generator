@@ -48,6 +48,13 @@
                     :activeBlockInList="activeBlockInList"
                     :classes="props.classes"
                 />
+
+                <create-photo
+                    v-if="blockType === 'photo'"
+                    :paramsNewBlock="paramsNewBlock"
+                    :activeBlockInList="activeBlockInList"
+                    :classes="props.classes"
+                />
             </div>
         </div>
 

@@ -9,6 +9,22 @@ export let exampleData = {
 
     blocks: [
         {
+            tag: 'img',
+            typeTag: 'one-sided',
+            innerHTML: null,
+            class: 'photo-1',
+            type: 'photo',
+            attrs: {
+                src: 'https://rgo.ru/upload/content_block/images/9ca8302358b777e143cd6e314058266b/7065323d0aa2e3fa6e8764c4f57f1655.jpg?itok=sawvdjq3',
+                alt: 'птичка'
+            },
+            styles: {
+                'max-width': '700px',
+                'width': '100%',
+                'object-fit': 'contain',
+            },
+        },
+        {
             tag: 'h1',
             typeTag: 'double-sided',
             innerHTML: 'Заголовок страницы',
@@ -174,21 +190,5 @@ export let exampleData = {
                 'font-weight': 'bold',
             },
         },
-        // {
-        //     tag: 'img',
-        //     typeTag: 'one-sided',
-        //     innerHTML: null,
-        //     class: 'image-1',
-        //     type: 'photo',
-        //     attrs: {
-        //         src: 'https://rgo.ru/upload/content_block/images/9ca8302358b777e143cd6e314058266b/7065323d0aa2e3fa6e8764c4f57f1655.jpg?itok=sawvdjq3',
-        //         alt: 'птичка'
-        //     },
-        //     styles: {
-        //         'max-width': '700px',
-        //         'width': '100%',
-        //         'object-fit': 'contain',
-        //     },
-        // }
     ],
 }

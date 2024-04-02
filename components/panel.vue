@@ -36,6 +36,12 @@
             >
                 Форма
             </div>
+
+            <div class="panel__item"
+                @click="openPopupCreate('photo')"
+            >
+                Фотография
+            </div>
         </div>
 
         <div class="action action_redactor" v-show="activeTabBlock === 'redactor'">

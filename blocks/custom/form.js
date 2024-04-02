@@ -44,7 +44,7 @@ innerHTMLBlock +=
         ${block.button.innerHTML}
     </${block.button.tag}>`;
 
-    generatedBlock = `<${block.tag} class=${block.class} ${styleForm} ${attrs}>
+    generatedBlock = `<${block.tag} class="${block.class}" ${styleForm} ${attrs}>
     ${innerHTMLBlock}
 </${block.tag}>`;
 
